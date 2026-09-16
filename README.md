@@ -1,3 +1,5 @@
+<div align="right"><img src="assets/icon_256.png" width="120" alt="AIAgent" title="AIAgent"></div>
+
 # AIAgent — an AI that can **see**, **hear**, and **talk** through your laptop
 
 A real-time, multimodal desktop assistant for **Windows** (also runs on
@@ -61,6 +63,31 @@ code changes.
   (offline, zero setup). Set `tts_engine: "edge"` to use a free, much nicer
   neural voice (Microsoft Edge TTS, no key needed, needs internet). A fully
   local neural option (**Piper**) is supported too.
+
+---
+
+## Persona and purpose
+
+By default the agent is **Nova**, your *laptop copilot* — a helpful
+real-time companion whose job is to:
+
+1. **Answer** your questions using what it sees and hears.
+2. **Help with on-screen work** (coding, writing, reading, learning) when
+   you ask.
+3. **In `watch` mode**, point out things that genuinely need attention —
+   errors on screen, unread notifications, likely typos, or something on
+   camera worth mentioning — and stay silent (`NONE`) otherwise.
+
+Make it your own via `config.json`:
+
+```jsonc
+{
+  "assistant_name": "Nova",   // its name (used in the greeting & replies)
+  "system_prompt": "..."      // optional: FULLY replace its persona/personality
+}
+```
+
+Leave `system_prompt` empty to keep the built-in copilot persona.
 
 ---
 
@@ -222,6 +249,7 @@ Arena/
 │  ├─ sensing/               # camera.py, screen.py, vision.py, audio.py (VAD)
 │  ├─ brain/                 # base.py, gemini.py, local.py (Ollama)
 │  └─ speech/                # stt.py (whisper/gemini), tts.py (sapi/edge/piper)
+├─ assets/                   # app icon (icon.ico for the exe + icon_256.png)
 ├─ tests/                    # 47 unit + integration tests
 ├─ ai_agent.spec             # PyInstaller spec (the .exe recipe)
 ├─ Build_AIAgent_on_Windows.bat   # one-click → dist\AIAgent.exe

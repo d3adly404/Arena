@@ -8,10 +8,18 @@ The spec is platform-tolerant: every optional/heavy dependency is collected
 only if it is importable, so the build still succeeds if an optional component
 (e.g. the offline Whisper STT) is missing.
 """
+import os
+import sys
+
 from PyInstaller.utils.hooks import collect_all, collect_submodules
 
 # SPECPATH is provided by PyInstaller: the directory containing this spec.
 ROOT = SPECPATH
+
+# App icon (a .ico is only meaningful on Windows; keep None elsewhere so the
+# spec also works for Linux/macOS builds).
+ICON_PATH = os.path.join(SPECPATH, "assets", "icon.ico")
+APP_ICON = ICON_PATH if (sys.platform == "win32" and os.path.isfile(ICON_PATH)) else None
 
 
 def try_collect(name):
@@ -90,4 +98,5 @@ exe = EXE(
     strip=False,
     upx=False,
     console=True,  # keep a console so the user can see logs & press Ctrl+C
+    icon=APP_ICON,
 )
