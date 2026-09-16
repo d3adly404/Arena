@@ -1,0 +1,2 @@
+# Packaging (only needed to build the .exe)
+pyinstaller>=6.6

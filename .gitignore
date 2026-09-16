@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# PyInstaller build output
+build/
+dist/
+
+# App runtime artifacts (keep config.example.json, ignore real config + logs)
+config.json
+ai_agent.log*
+*.mp3
+*.wav
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
