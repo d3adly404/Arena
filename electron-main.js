@@ -25,26 +25,30 @@ if (!gotLock) {
   });
 }
 
-// ── Start the embedded Express server ───────────────────────
-function startServer() {
-  return new Promise((resolve, reject) => {
-    const serverScript = path.join(__dirname, 'server.js');
-
-    serverProcess = spawn(process.execPath, [serverScript], {
-      env: { ...process.env, PORT: SERVER_PORT, ELECTRON: 'true' },
-      stdio: ['pipe', 'pipe', 'pipe'],
-      windowsHide: true,
-    });
+// ── Start Express server IN-PROCESS (not as child process) ──
+// This is critical: require() resolves deps from the asar archive,
+// while spawn() cannot find node_modules inside asar.
+async function startServer() {
+  try {
+    const { startServer } = require('./server.js');
+    serverInstance = await startServer(SERVER_PORT);
+    console.log('Express server running on port', SERVER_PORT);
+  } catch (err) {
+    console.error('Server failed, starting fallback:', err);
+    const express = require('express');
+    const srv = express();
+    srv.use(express.static(path.join(__dirname, 'public')));
+    serverInstance = srv.listen(SERVER_PORT, '0.0.0.0');
   }
 }
 
-// ── Get icon path ───────────────────────────────────────────
+// ── Icon ────────────────────────────────────────────────────
 function getIconPath() {
-  const iconName = process.platform === 'win32' ? 'icon.ico' : 'icon.png';
-  return path.join(__dirname, 'build-resources', iconName);
+  const name = process.platform === 'win32' ? 'icon.ico' : 'icon.png';
+  return path.join(__dirname, 'build-resources', name);
 }
 
-// ── Create the main window ──────────────────────────────────
+// ── Window ──────────────────────────────────────────────────
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1280,
@@ -71,12 +75,9 @@ function createWindow() {
     if (isDev) mainWindow.webContents.openDevTools({ mode: 'detach' });
   });
 
-  // Retry if page fails to load (server might not be ready yet)
-  mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDesc) => {
-    console.error('Page load failed:', errorCode, errorDesc, '— retrying in 1s...');
-    setTimeout(() => {
-      mainWindow.loadURL(`http://localhost:${SERVER_PORT}`);
-    }, 1000);
+  mainWindow.webContents.on('did-fail-load', (e, code, desc) => {
+    console.error('Load failed:', code, desc, '— retrying...');
+    setTimeout(() => mainWindow.loadURL(`http://localhost:${SERVER_PORT}`), 1000);
   });
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
@@ -87,7 +88,7 @@ function createWindow() {
   mainWindow.on('closed', () => { mainWindow = null; });
 }
 
-// ── Application menu ────────────────────────────────────────
+// ── Menu ────────────────────────────────────────────────────
 function buildMenu() {
   const template = [
     {
@@ -121,7 +122,7 @@ function showAbout() {
   });
 }
 
-// ── IPC Handlers ────────────────────────────────────────────
+// ── IPC ─────────────────────────────────────────────────────
 ipcMain.on('window-minimize', () => mainWindow?.minimize());
 ipcMain.on('window-maximize', () => {
   if (mainWindow?.isMaximized()) mainWindow.unmaximize();
@@ -129,23 +130,16 @@ ipcMain.on('window-maximize', () => {
 });
 ipcMain.on('window-close', () => mainWindow?.close());
 ipcMain.handle('select-download-path', async () => {
-  const result = await dialog.showOpenDialog(mainWindow, {
-    properties: ['openDirectory', 'createDirectory'], title: 'Choose download folder',
-  });
-  return result.canceled ? null : result.filePaths[0];
+  const r = await dialog.showOpenDialog(mainWindow, { properties: ['openDirectory', 'createDirectory'] });
+  return r.canceled ? null : r.filePaths[0];
 });
 ipcMain.handle('get-platform', () => process.platform);
 
-// ── App Lifecycle ───────────────────────────────────────────
+// ── Lifecycle ───────────────────────────────────────────────
 app.whenReady().then(async () => {
   buildMenu();
-
-  // Start server FIRST, then create window
   await startServer();
-
-  // Small safety delay for the server to be fully ready
   setTimeout(() => createWindow(), 500);
-
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
