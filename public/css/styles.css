@@ -1282,3 +1282,29 @@ body.electron-app .titlebar-right {
 body.electron-app .address-bar-wrapper {
   padding-right: 8px;
 }
+
+/* ── Loading Indicator ─────────────────────────────────────── */
+.loading-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: var(--accent-gradient);
+  z-index: 100;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 10px var(--accent-primary);
+}
+.loading-bar.active {
+  animation: loadingProgress 2s ease-in-out infinite;
+}
+@keyframes loadingProgress {
+  0% { width: 0%; }
+  50% { width: 70%; }
+  100% { width: 90%; }
+}
+.loading-bar.done {
+  width: 100%;
+  opacity: 0;
+  transition: width 0.2s ease, opacity 0.3s ease 0.2s;
+}

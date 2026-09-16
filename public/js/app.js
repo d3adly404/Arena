@@ -54,9 +54,15 @@ document.addEventListener('DOMContentLoaded', () => {
   initKeyboardShortcuts();
   createNewTab();
 
-  // Iframe load error handler — many sites block iframes via X-Frame-Options
+  // Iframe load handler — update tab title + hide loading bar
   const iframe = document.getElementById('browser-frame');
   iframe.addEventListener('load', () => {
+    // Loading complete
+    const loadingBar = document.getElementById('loading-bar');
+    if (loadingBar) {
+      loadingBar.className = 'loading-bar done';
+      setTimeout(() => { loadingBar.className = 'loading-bar'; }, 500);
+    }
     // Try to detect if the iframe loaded successfully
     try {
       // If we can access the URL, it loaded
@@ -79,6 +85,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   iframe.addEventListener('error', () => {
+    const loadingBar = document.getElementById('loading-bar');
+    if (loadingBar) loadingBar.className = 'loading-bar';
     const tab = state.tabs.find(t => t.id === state.activeTabId);
     if (tab && tab.url) {
       showIframeError(tab.url);
@@ -292,6 +300,8 @@ function navigateTo(input) {
 
     // Navigate the iframe
     const iframe = document.getElementById('browser-frame');
+    const loadingBar = document.getElementById('loading-bar');
+    loadingBar.className = 'loading-bar active';
     iframe.src = url;
 
     // Update tabs display
