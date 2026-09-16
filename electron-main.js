@@ -29,9 +29,7 @@ if (!gotLock) {
 // ── Start the embedded Express server ───────────────────────
 function startServer() {
   return new Promise((resolve, reject) => {
-    const serverScript = isDev
-      ? path.join(__dirname, 'server.js')
-      : path.join(process.resourcesPath, 'app', 'server.js');
+    const serverScript = path.join(__dirname, 'server.js');
 
     serverProcess = spawn(process.execPath, [serverScript], {
       env: { ...process.env, PORT: SERVER_PORT, ELECTRON: 'true' },

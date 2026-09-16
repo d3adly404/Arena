@@ -38,59 +38,11 @@
       "electron-preload.js",
       "server.js",
       "public/**/*",
+      "node_modules/**/*",
       "package.json",
       "!node_modules/.cache",
       "!dist",
       "!.git"
-    ],
-    "extraResources": [
-      {
-        "from": "node_modules",
-        "to": "app/node_modules",
-        "filter": [
-          "express/**/*",
-          "cors/**/*",
-          "uuid/**/*",
-          "mime/**/*",
-          "mime-db/**/*",
-          "body-parser/**/*",
-          "bytes/**/*",
-          "content-type/**/*",
-          "depd/**/*",
-          "encodeurl/**/*",
-          "escape-html/**/*",
-          "etag/**/*",
-          "finalhandler/**/*",
-          "forwarded/**/*",
-          "fresh/**/*",
-          "http-errors/**/*",
-          "iconv-lite/**/*",
-          "inherits/**/*",
-          "media-typer/**/*",
-          "merge-descriptors/**/*",
-          "methods/**/*",
-          "mime/**/*",
-          "ms/**/*",
-          "negotiator/**/*",
-          "on-finished/**/*",
-          "parseurl/**/*",
-          "proxy-addr/**/*",
-          "qs/**/*",
-          "range-parser/**/*",
-          "raw-body/**/*",
-          "safe-buffer/**/*",
-          "safer-buffer/**/*",
-          "send/**/*",
-          "serve-static/**/*",
-          "setprototypeof/**/*",
-          "statuses/**/*",
-          "toidentifier/**/*",
-          "type-is/**/*",
-          "unpipe/**/*",
-          "utils-merge/**/*",
-          "vary/**/*"
-        ]
-      }
     ],
     "win": {
       "target": [
@@ -112,10 +64,7 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "Novase Browser",
-      "include": "build-resources/installer.nsh",
-      "license": null,
-      "installerLanguages": ["English"],
-      "language": "1033"
+      "include": "build-resources/installer.nsh"
     },
     "linux": {
       "target": ["AppImage", "deb"],
