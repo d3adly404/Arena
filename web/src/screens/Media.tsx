@@ -249,7 +249,7 @@ export function MediaScreen({ query }: { query: Record<string, string> }) {
               </a>
               <Button
                 size="sm"
-                icon="edit"
+                icon="pen-line"
                 onClick={async () => {
                   const note = window.prompt('Add or update the note for this photograph', selected.note || '');
                   if (note === null) return;
