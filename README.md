@@ -8,7 +8,9 @@ backgrounds, and the chiptune music / sound effects. There are **no external ass
 
 > The playable deliverable is a **Windows `.exe`** — `dist/Metrodivinia.exe`.
 
-![rooms](shots/rooms_sheet.png)
+![rooms](docs/rooms_sheet.png)
+
+![gameplay](docs/gameplay.png)
 
 ## The world
 
@@ -43,9 +45,23 @@ procedural chiptune soundtrack with a track per zone.
 | Confirm / talk / open | Enter / Z |
 | Cancel / back | X / Esc |
 
-## Playing (Windows)
+## How to run
 
-Just run `dist/Metrodivinia.exe`. Progress saves next to the executable.
+### Play the game (Windows) — no install, no dependencies
+1. Grab `dist/Metrodivinia.exe` (already built and committed in this repo).
+2. Copy it anywhere on a Windows PC (any folder works).
+3. Double-click `Metrodivinia.exe`. That's it — it launches straight into the title screen.
+4. Press **Enter** to start a new game (or continue if a save exists).
+5. Your save file (`metrodivinia.sav`) is created in the same folder as the `.exe`.
+
+Troubleshooting: if Windows SmartScreen warns about an unknown publisher, choose
+*"More info" → "Run anyway"*. The game is a single self-contained executable.
+
+### Run the test harness (Linux, headless)
+`./harness` renders screenshots and runs automated playtests (see below).
+
+### Build from source
+See [Building](#building). Windows build needs only Zig (no SDK); Linux build needs `gcc`.
 
 ## Building
 
