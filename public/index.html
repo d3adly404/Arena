@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Novase Browser</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Title Bar -->
+  <div class="titlebar">
+    <div class="titlebar-left">
+      <div class="logo">
+        <svg class="logo-icon" viewBox="0 0 32 32" fill="none">
+          <defs>
+            <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#6c5ce7"/>
+              <stop offset="50%" style="stop-color:#a29bfe"/>
+              <stop offset="100%" style="stop-color:#fd79a8"/>
+            </linearGradient>
+          </defs>
+          <path d="M16 2L28 8V24L16 30L4 24V8L16 2Z" fill="url(#logoGrad)" opacity="0.9"/>
+          <path d="M16 6L24 10V22L16 26L8 22V10L16 6Z" fill="#0a0a1a" opacity="0.6"/>
+          <circle cx="16" cy="16" r="4" fill="url(#logoGrad)"/>
+          <path d="M16 12L20 16L16 20L12 16Z" fill="white" opacity="0.8"/>
+        </svg>
+        <span class="logo-text">Novase</span>
+      </div>
+    </div>
+    <div class="titlebar-center">
+      <div class="nav-controls">
+        <button class="nav-btn" id="btn-back" title="Back">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </button>
+        <button class="nav-btn" id="btn-forward" title="Forward">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <button class="nav-btn" id="btn-refresh" title="Refresh">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        </button>
+        <button class="nav-btn" id="btn-home" title="Home">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="titlebar-right">
+      <button class="titlebar-btn" id="btn-games" title="Games">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="16" cy="10" r="1"/><circle cx="18" cy="12" r="1"/></svg>
+      </button>
+      <button class="titlebar-btn" id="btn-downloads" title="Downloads">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span class="badge" id="download-badge" style="display:none">0</span>
+      </button>
+      <button class="titlebar-btn" id="btn-bookmarks" title="Bookmarks">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+      </button>
+      <button class="titlebar-btn" id="btn-settings" title="Settings">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <div class="tabs-container" id="tabs-container"></div>
+    <button class="new-tab-btn" id="btn-new-tab" title="New Tab">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+  </div>
+
+  <!-- Address / Search Bar -->
+  <div class="address-bar-wrapper">
+    <div class="search-engine-selector" id="search-engine-btn">
+      <img id="current-engine-icon" src="" alt="">
+      <span id="current-engine-name">Google</span>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="address-bar">
+      <input type="text" id="url-input" placeholder="Search or enter URL..." autocomplete="off" spellcheck="false">
+      <button class="action-btn" id="btn-go" title="Go">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+    <button class="media-detect-btn" id="btn-detect-media" title="Detect & Download Media">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+    </button>
+  </div>
+
+  <!-- Search Engine Dropdown -->
+  <div class="engine-dropdown" id="engine-dropdown" style="display:none">
+    <div class="engine-option" data-engine="google">
+      <span class="engine-icon">🔍</span>
+      <span>Google</span>
+    </div>
+    <div class="engine-option" data-engine="bing">
+      <span class="engine-icon">🔎</span>
+      <span>Bing</span>
+    </div>
+    <div class="engine-option" data-engine="duckduckgo">
+      <span class="engine-icon">🦆</span>
+      <span>DuckDuckGo</span>
+    </div>
+    <div class="engine-option" data-engine="yahoo">
+      <span class="engine-icon">🟣</span>
+      <span>Yahoo</span>
+    </div>
+    <div class="engine-option" data-engine="brave">
+      <span class="engine-icon">🦁</span>
+      <span>Brave Search</span>
+    </div>
+    <div class="engine-option" data-engine="ecosia">
+      <span class="engine-icon">🌱</span>
+      <span>Ecosia</span>
+    </div>
+    <div class="engine-option" data-engine="yandex">
+      <span class="engine-icon">🔴</span>
+      <span>Yandex</span>
+    </div>
+    <div class="engine-option" data-engine="startpage">
+      <span class="engine-icon">🔒</span>
+      <span>Startpage</span>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="main-content" id="main-content">
+    <!-- New Tab Page -->
+    <div class="new-tab-page" id="new-tab-page">
+      <div class="ntp-hero">
+        <div class="ntp-logo">
+          <svg class="ntp-logo-icon" viewBox="0 0 80 80" fill="none">
+            <defs>
+              <linearGradient id="ntpGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#6c5ce7"/>
+                <stop offset="50%" style="stop-color:#a29bfe"/>
+                <stop offset="100%" style="stop-color:#fd79a8"/>
+              </linearGradient>
+            </defs>
+            <path d="M40 4L70 20V60L40 76L10 60V20L40 4Z" fill="url(#ntpGrad)" opacity="0.9"/>
+            <path d="M40 14L60 24V56L40 66L20 56V24L40 14Z" fill="#0a0a1a" opacity="0.5"/>
+            <circle cx="40" cy="40" r="12" fill="url(#ntpGrad)"/>
+            <path d="M40 28L52 40L40 52L28 40Z" fill="white" opacity="0.8"/>
+          </svg>
+          <h1>Novase</h1>
+          <p class="ntp-tagline">Browse. Play. Download.</p>
+        </div>
+        <div class="ntp-search">
+          <div class="ntp-search-inner">
+            <span class="ntp-engine-icon" id="ntp-engine-icon">🔍</span>
+            <input type="text" id="ntp-search-input" placeholder="Search the web..." autocomplete="off">
+            <button id="ntp-search-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="ntp-shortcuts">
+          <div class="ntp-shortcut" data-url="https://youtube.com">
+            <div class="shortcut-icon youtube">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </div>
+            <span>YouTube</span>
+          </div>
+          <div class="ntp-shortcut" data-url="https://twitter.com">
+            <div class="shortcut-icon twitter">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </div>
+            <span>X</span>
+          </div>
+          <div class="ntp-shortcut" data-url="https://reddit.com">
+            <div class="shortcut-icon reddit">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+            </div>
+            <span>Reddit</span>
+          </div>
+          <div class="ntp-shortcut" data-url="https://github.com">
+            <div class="shortcut-icon github">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+            </div>
+            <span>GitHub</span>
+          </div>
+          <div class="ntp-shortcut" data-url="https://wikipedia.org">
+            <div class="shortcut-icon wiki">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12.09 13.114c-.916 1.952-2.235 4.608-3.035 6.142-.443.849-1.151 1.294-1.683 1.294-.426 0-.842-.294-.842-.83 0-.571.349-1.357.708-2.134.606-1.307 1.311-2.982 1.311-2.982s-.307.183-.861.183c-.555 0-1.11-.344-1.11-.344l-1.599.835s.375.366.375.814c0 .449-.306 1.066-.681 1.672l-1.699 2.759c-.318.519-.564.78-.95.78-.436 0-.885-.362-.885-.95 0-.544.343-1.208.697-1.916.77-1.536 1.699-3.431 1.699-3.431s-.338.183-.894.183c-.555 0-1.11-.28-1.11-.28l-1.601.747s.355.327.355.731c0 .404-.395 1.107-.765 1.727-.422.708-.839 1.296-1.219 1.718C3.39 19.276 2.958 19.5 2.55 19.5c-.66 0-1.117-.659-1.117-1.266 0-.504.283-1.077.763-1.738 1.046-1.441 2.328-3.153 2.328-3.153s-.224.127-.679.127c-.455 0-.912-.183-.912-.183L.277 14.03s.258.237.258.541c0 .304-.228.788-.467 1.258l-.724 1.468c-.24.484-.406.838-.406 1.132 0 .593.452 1.056 1.112 1.056.944 0 1.931-.726 2.69-1.632.76-.907 1.48-2.143 1.48-2.143s.143.095.393.095c.249 0 .536-.095.536-.095l2.24-1.294s-.13.247-.13.527c0 .281.094.541.094.541l1.207 2.879s.178-.38.534-.38c.355 0 .567.333.567.333l-.384.869zM19.5 3.5H9.272l-1.5-2h13.228a1.5 1.5 0 011.5 1.5v13.728l-2-1.5V3.5zm-5 5h-7v11h11v-7l2 1.5V21.5a1.5 1.5 0 01-1.5 1.5h-13a1.5 1.5 0 01-1.5-1.5v-13a1.5 1.5 0 011.5-1.5h5v-2z"/></svg>
+            </div>
+            <span>Wikipedia</span>
+          </div>
+          <div class="ntp-shortcut" data-url="https://twitch.tv">
+            <div class="shortcut-icon twitch">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg>
+            </div>
+            <span>Twitch</span>
+          </div>
+        </div>
+      </div>
+      <!-- Quick Access Sections -->
+      <div class="ntp-sections">
+        <div class="ntp-section">
+          <h3>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Quick Actions
+          </h3>
+          <div class="quick-actions">
+            <button class="quick-action" id="qa-games">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="16" cy="10" r="1"/><circle cx="18" cy="12" r="1"/></svg>
+              <span>Play Games</span>
+            </button>
+            <button class="quick-action" id="qa-downloader">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Download Media</span>
+            </button>
+            <button class="quick-action" id="qa-bookmarks">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+              <span>Bookmarks</span>
+            </button>
+            <button class="quick-action" id="qa-history">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>History</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Browser Frame Container (for iframes) -->
+    <div class="browser-frame-container" id="browser-frame-container" style="display:none">
+      <iframe id="browser-frame" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox" referrerpolicy="no-referrer"></iframe>
+    </div>
+
+    <!-- Games Panel -->
+    <div class="panel games-panel" id="games-panel" style="display:none">
+      <div class="panel-header">
+        <h2>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="16" cy="10" r="1"/><circle cx="18" cy="12" r="1"/></svg>
+          Game Center
+        </h2>
+        <button class="close-panel" id="close-games">✕</button>
+      </div>
+      <div class="games-grid" id="games-grid">
+        <div class="game-card" data-game="snake">
+          <div class="game-preview snake-preview">
+            <svg width="60" height="60" viewBox="0 0 60 60"><rect x="5" y="50" width="8" height="8" fill="#00b894"/><rect x="13" y="50" width="8" height="8" fill="#00b894"/><rect x="21" y="50" width="8" height="8" fill="#00b894"/><rect x="21" y="42" width="8" height="8" fill="#00b894"/><rect x="29" y="42" width="8" height="8" fill="#00b894"/><rect x="29" y="34" width="8" height="8" fill="#00b894"/><circle cx="45" cy="15" r="4" fill="#fd79a8"/></svg>
+          </div>
+          <h3>Snake</h3>
+          <p>Classic snake game</p>
+        </div>
+        <div class="game-card" data-game="tetris">
+          <div class="game-preview tetris-preview">
+            <svg width="60" height="60" viewBox="0 0 60 60"><rect x="10" y="40" width="10" height="10" fill="#6c5ce7"/><rect x="20" y="40" width="10" height="10" fill="#6c5ce7"/><rect x="30" y="40" width="10" height="10" fill="#6c5ce7"/><rect x="20" y="30" width="10" height="10" fill="#6c5ce7"/><rect x="10" y="20" width="10" height="10" fill="#fd79a8"/><rect x="10" y="10" width="10" height="10" fill="#fd79a8"/><rect x="40" y="50" width="10" height="10" fill="#00cec9"/><rect x="30" y="50" width="10" height="10" fill="#fdcb6e"/></svg>
+          </div>
+          <h3>Tetris</h3>
+          <p>Stack blocks perfectly</p>
+        </div>
+        <div class="game-card" data-game="2048">
+          <div class="game-preview g2048-preview">
+            <svg width="60" height="60" viewBox="0 0 60 60"><rect x="5" y="5" width="22" height="22" rx="4" fill="#fdcb6e"/><rect x="33" y="5" width="22" height="22" rx="4" fill="#e17055"/><rect x="5" y="33" width="22" height="22" rx="4" fill="#74b9ff"/><rect x="33" y="33" width="22" height="22" rx="4" fill="#55efc4"/><text x="16" y="21" font-size="10" fill="#333" font-weight="bold">2</text><text x="40" y="21" font-size="10" fill="white" font-weight="bold">4</text><text x="12" y="49" font-size="10" fill="white" font-weight="bold">8</text><text x="40" y="49" font-size="10" fill="#333" font-weight="bold">16</text></svg>
+          </div>
+          <h3>2048</h3>
+          <p>Merge tiles to win</p>
+        </div>
+        <div class="game-card" data-game="breakout">
+          <div class="game-preview breakout-preview">
+            <svg width="60" height="60" viewBox="0 0 60 60"><rect x="5" y="5" width="12" height="6" rx="1" fill="#fd79a8"/><rect x="19" y="5" width="12" height="6" rx="1" fill="#a29bfe"/><rect x="33" y="5" width="12" height="6" rx="1" fill="#ffeaa7"/><rect x="47" y="5" width="8" height="6" rx="1" fill="#55efc4"/><rect x="5" y="13" width="12" height="6" rx="1" fill="#74b9ff"/><rect x="19" y="13" width="12" height="6" rx="1" fill="#fd79a8"/><rect x="33" y="13" width="12" height="6" rx="1" fill="#a29bfe"/><circle cx="30" cy="35" r="4" fill="white"/><rect x="20" y="52" width="20" height="5" rx="2" fill="#dfe6e9"/></svg>
+          </div>
+          <h3>Breakout</h3>
+          <p>Break all the bricks</p>
+        </div>
+        <div class="game-card" data-game="flappy">
+          <div class="game-preview flappy-preview">
+            <svg width="60" height="60" viewBox="0 0 60 60"><circle cx="20" cy="30" r="8" fill="#fdcb6e"/><circle cx="24" cy="28" r="2" fill="white"/><circle cx="24" cy="28" r="1" fill="black"/><polygon points="28,30 36,28 36,32" fill="#e17055"/><rect x="42" y="0" width="8" height="22" rx="2" fill="#00b894"/><rect x="42" y="35" width="8" height="25" rx="2" fill="#00b894"/></svg>
+          </div>
+          <h3>Flappy Bird</h3>
+          <p>Fly through pipes</p>
+        </div>
+        <div class="game-card" data-game="minesweeper">
+          <div class="game-preview minesweeper-preview">
+            <svg width="60" height="60" viewBox="0 0 60 60"><rect x="5" y="5" width="12" height="12" rx="1" fill="#dfe6e9"/><rect x="19" y="5" width="12" height="12" rx="1" fill="#b2bec3"/><rect x="33" y="5" width="12" height="12" rx="1" fill="#dfe6e9"/><rect x="47" y="5" width="8" height="12" rx="1" fill="#b2bec3"/><rect x="5" y="19" width="12" height="12" rx="1" fill="#b2bec3"/><circle cx="43" cy="11" r="4" fill="#2d3436"/><text x="9" y="15" font-size="9" fill="#0984e3" font-weight="bold">1</text><text x="37" y="29" font-size="9" fill="#d63031" font-weight="bold">X</text></svg>
+          </div>
+          <h3>Minesweeper</h3>
+          <p>Clear the minefield</p>
+        </div>
+      </div>
+      <!-- Game Container -->
+      <div class="game-container" id="game-container" style="display:none">
+        <div class="game-toolbar">
+          <button id="game-back-btn" class="game-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Back to Games
+          </button>
+          <span class="game-title" id="game-title"></span>
+          <div class="game-score">
+            Score: <span id="game-score">0</span>
+          </div>
+        </div>
+        <canvas id="game-canvas" width="600" height="500"></canvas>
+        <div class="game-controls-hint" id="game-controls-hint"></div>
+      </div>
+    </div>
+
+    <!-- Downloads Panel -->
+    <div class="panel downloads-panel" id="downloads-panel" style="display:none">
+      <div class="panel-header">
+        <h2>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Manager
+        </h2>
+        <button class="close-panel" id="close-downloads">✕</button>
+      </div>
+      <!-- Media Grabber -->
+      <div class="media-grabber">
+        <h3>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+          Media Grabber
+        </h3>
+        <p class="grabber-desc">Paste a URL from YouTube, Vimeo, Twitter, or any video/music site to download</p>
+        <div class="grabber-input-group">
+          <input type="text" id="media-url-input" placeholder="Paste video or music URL here...">
+          <button id="fetch-media-btn" class="btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Analyze
+          </button>
+        </div>
+        <!-- Media Info Card -->
+        <div class="media-info-card" id="media-info-card" style="display:none">
+          <div class="media-info-thumb">
+            <img id="media-thumb" src="" alt="">
+            <span id="media-duration" class="media-duration"></span>
+          </div>
+          <div class="media-info-details">
+            <h4 id="media-title"></h4>
+            <p id="media-uploader"></p>
+          </div>
+        </div>
+        <!-- Download Options -->
+        <div class="download-options" id="download-options" style="display:none">
+          <h4>Download Options</h4>
+          <div class="dl-format-grid" id="dl-format-grid"></div>
+          <div class="dl-quick-actions">
+            <button class="btn-download-video" id="dl-video-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/><line x1="17" y1="17" x2="22" y2="17"/></svg>
+              Download Video (MP4)
+            </button>
+            <button class="btn-download-audio" id="dl-audio-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+              Download Audio (MP3)
+            </button>
+          </div>
+        </div>
+        <!-- Active Downloads -->
+        <div class="active-downloads" id="active-downloads"></div>
+      </div>
+      <!-- Download History -->
+      <div class="download-history">
+        <h3>Downloaded Files</h3>
+        <div class="download-list" id="download-list">
+          <p class="empty-state">No downloads yet</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bookmarks Panel -->
+    <div class="panel bookmarks-panel" id="bookmarks-panel" style="display:none">
+      <div class="panel-header">
+        <h2>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+          Bookmarks
+        </h2>
+        <button class="close-panel" id="close-bookmarks">✕</button>
+      </div>
+      <div class="bookmarks-content" id="bookmarks-content">
+        <p class="empty-state">No bookmarks yet. Press Ctrl+D to bookmark a page.</p>
+      </div>
+    </div>
+
+    <!-- Settings Panel -->
+    <div class="panel settings-panel" id="settings-panel" style="display:none">
+      <div class="panel-header">
+        <h2>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Settings
+        </h2>
+        <button class="close-panel" id="close-settings">✕</button>
+      </div>
+      <div class="settings-content">
+        <div class="setting-group">
+          <h3>Appearance</h3>
+          <div class="setting-item">
+            <label>Theme</label>
+            <select id="theme-select">
+              <option value="dark">Dark (Default)</option>
+              <option value="light">Light</option>
+              <option value="midnight">Midnight Blue</option>
+              <option value="cyberpunk">Cyberpunk</option>
+            </select>
+          </div>
+        </div>
+        <div class="setting-group">
+          <h3>Search</h3>
+          <div class="setting-item">
+            <label>Default Search Engine</label>
+            <select id="default-engine-select">
+              <option value="google">Google</option>
+              <option value="bing">Bing</option>
+              <option value="duckduckgo">DuckDuckGo</option>
+              <option value="yahoo">Yahoo</option>
+              <option value="brave">Brave Search</option>
+              <option value="ecosia">Ecosia</option>
+              <option value="yandex">Yandex</option>
+              <option value="startpage">Startpage</option>
+            </select>
+          </div>
+        </div>
+        <div class="setting-group">
+          <h3>Privacy</h3>
+          <div class="setting-item">
+            <label>Clear Browsing Data</label>
+            <button class="btn-danger" id="clear-data-btn">Clear All Data</button>
+          </div>
+        </div>
+        <div class="setting-group">
+          <h3>About</h3>
+          <div class="about-info">
+            <div class="about-logo">
+              <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
+                <path d="M16 2L28 8V24L16 30L4 24V8L16 2Z" fill="url(#logoGrad)" opacity="0.9"/>
+                <circle cx="16" cy="16" r="4" fill="url(#logoGrad)"/>
+              </svg>
+              <div>
+                <strong>Novase Browser</strong>
+                <span>v1.0.0</span>
+              </div>
+            </div>
+            <p>A modern browser with built-in games, media downloading, and multi-engine search.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
