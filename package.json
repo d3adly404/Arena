@@ -2,14 +2,130 @@
   "name": "novase-browser",
   "version": "1.0.0",
   "description": "Novase - A sleek modern browser with built-in games and media downloader",
-  "main": "server.js",
+  "main": "electron-main.js",
+  "author": "Novase Team",
+  "license": "MIT",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "electron": "electron .",
+    "electron:dev": "NODE_ENV=development electron .",
+    "build": "electron-builder --win",
+    "build:win": "electron-builder --win --x64",
+    "build:portable": "electron-builder --win portable",
+    "build:all": "electron-builder --win --linux --mac",
+    "pack": "electron-builder --dir"
   },
   "dependencies": {
-    "express": "^4.18.2",
     "cors": "^2.8.5",
+    "express": "^4.18.2",
     "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "electron": "^44.4.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.novase.browser",
+    "productName": "Novase Browser",
+    "copyright": "Copyright © 2026 Novase",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build-resources"
+    },
+    "files": [
+      "electron-main.js",
+      "electron-preload.js",
+      "server.js",
+      "public/**/*",
+      "package.json",
+      "!node_modules/.cache",
+      "!dist",
+      "!.git"
+    ],
+    "extraResources": [
+      {
+        "from": "node_modules",
+        "to": "app/node_modules",
+        "filter": [
+          "express/**/*",
+          "cors/**/*",
+          "uuid/**/*",
+          "mime/**/*",
+          "mime-db/**/*",
+          "body-parser/**/*",
+          "bytes/**/*",
+          "content-type/**/*",
+          "depd/**/*",
+          "encodeurl/**/*",
+          "escape-html/**/*",
+          "etag/**/*",
+          "finalhandler/**/*",
+          "forwarded/**/*",
+          "fresh/**/*",
+          "http-errors/**/*",
+          "iconv-lite/**/*",
+          "inherits/**/*",
+          "media-typer/**/*",
+          "merge-descriptors/**/*",
+          "methods/**/*",
+          "mime/**/*",
+          "ms/**/*",
+          "negotiator/**/*",
+          "on-finished/**/*",
+          "parseurl/**/*",
+          "proxy-addr/**/*",
+          "qs/**/*",
+          "range-parser/**/*",
+          "raw-body/**/*",
+          "safe-buffer/**/*",
+          "safer-buffer/**/*",
+          "send/**/*",
+          "serve-static/**/*",
+          "setprototypeof/**/*",
+          "statuses/**/*",
+          "toidentifier/**/*",
+          "type-is/**/*",
+          "unpipe/**/*",
+          "utils-merge/**/*",
+          "vary/**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build-resources/icon.ico",
+      "artifactName": "Novase-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "installerIcon": "build-resources/icon.ico",
+      "uninstallerIcon": "build-resources/icon.ico",
+      "installerHeaderIcon": "build-resources/icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Novase Browser",
+      "include": "build-resources/installer.nsh",
+      "license": null,
+      "installerLanguages": ["English"],
+      "language": "1033"
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "icon": "build-resources/icon.png",
+      "category": "Network"
+    },
+    "mac": {
+      "target": ["dmg"],
+      "icon": "build-resources/icon.png",
+      "category": "public.app-category.utilities"
+    }
   }
 }

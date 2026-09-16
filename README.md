@@ -142,6 +142,47 @@ curl -X POST http://localhost:3000/api/media/info \
 
 ---
 
+## 🖥️ Windows Desktop App
+
+Novase can be built as a native Windows desktop application using Electron.
+
+### Build the Windows Installer
+
+```bash
+# Install dependencies (including dev dependencies)
+npm install
+
+# Build the Windows .exe installer
+npm run build:win
+```
+
+The installer will be created in the `dist/` folder as `Novase-Setup-1.0.0.exe`.
+
+### Run in Development Mode (Desktop)
+
+```bash
+# Run as Electron desktop app
+npm run electron
+```
+
+### Build Options
+
+| Command | Description |
+|---------|-------------|
+| `npm run build:win` | Build Windows x64 installer (.exe) |
+| `npm run build:portable` | Build portable Windows executable |
+| `npm run build:all` | Build for Windows, Linux, and macOS |
+| `npm run pack` | Package without creating installer |
+
+### Desktop Features
+- **Native window controls** — Minimize, maximize, close
+- **Custom titlebar** — Frameless with integrated controls
+- **Application menu** — File, Edit, View, Window, Help
+- **Single instance** — Prevents multiple windows
+- **External links** — Opens in system default browser
+
+---
+
 ## 🧰 Tech Stack
 
 - **Frontend** — Vanilla HTML, CSS, JavaScript (zero dependencies, blazing fast)

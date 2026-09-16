@@ -7,6 +7,7 @@ const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const isElectron = process.env.ELECTRON === 'true';
 
 app.use(cors());
 app.use(express.json());
@@ -206,5 +207,6 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n  ╔══════════════════════════════════════╗`);
   console.log(`  ║   🚀 Novase Browser is running!      ║`);
   console.log(`  ║   http://0.0.0.0:${PORT}               ║`);
+  if (isElectron) console.log(`  ║   Mode: Electron Desktop App         ║`);
   console.log(`  ╚══════════════════════════════════════╝\n`);
 });

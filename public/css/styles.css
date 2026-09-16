@@ -1237,3 +1237,47 @@ body.theme-cyberpunk {
   .dl-quick-actions { flex-direction: column; }
   .grabber-input-group { flex-direction: column; }
 }
+
+/* ── Electron Desktop Overrides ─────────────────────────────── */
+body.electron-app .titlebar {
+  -webkit-app-region: drag;
+}
+
+body.electron-app .titlebar-left,
+body.electron-app .titlebar-center,
+body.electron-app .titlebar-right {
+  -webkit-app-region: no-drag;
+}
+
+.window-controls {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-left: 8px;
+  border-left: 1px solid var(--border-color);
+  padding-left: 4px;
+}
+
+.win-ctrl {
+  width: 36px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.win-ctrl:hover {
+  background: var(--bg-hover);
+}
+.win-ctrl.win-close:hover {
+  background: #e81123;
+  color: white;
+}
+
+body.electron-app .address-bar-wrapper {
+  padding-right: 8px;
+}
