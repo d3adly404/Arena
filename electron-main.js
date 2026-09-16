@@ -25,21 +25,15 @@ if (!gotLock) {
   });
 }
 
-// ── Start the Express server IN-PROCESS ─────────────────────
-// This is the key fix: require() instead of spawn() so deps resolve from asar
-async function startServer() {
-  try {
-    const { startServer } = require('./server.js');
-    serverInstance = await startServer(SERVER_PORT);
-    console.log('Express server started on port', SERVER_PORT);
-  } catch (err) {
-    console.error('Failed to start embedded server:', err);
-    // Fallback: start a minimal static server
-    const express = require('express');
-    const srv = express();
-    srv.use(express.static(path.join(__dirname, 'public')));
-    serverInstance = srv.listen(SERVER_PORT, '0.0.0.0', () => {
-      console.log('Fallback static server on port', SERVER_PORT);
+// ── Start the embedded Express server ───────────────────────
+function startServer() {
+  return new Promise((resolve, reject) => {
+    const serverScript = path.join(__dirname, 'server.js');
+
+    serverProcess = spawn(process.execPath, [serverScript], {
+      env: { ...process.env, PORT: SERVER_PORT, ELECTRON: 'true' },
+      stdio: ['pipe', 'pipe', 'pipe'],
+      windowsHide: true,
     });
   }
 }

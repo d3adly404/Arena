@@ -38,12 +38,12 @@
       "electron-preload.js",
       "server.js",
       "public/**/*",
+      "node_modules/**/*",
       "package.json",
       "!**/node_modules/.cache",
       "!dist",
       "!.git"
     ],
-    "asar": true,
     "win": {
       "target": [
         {
