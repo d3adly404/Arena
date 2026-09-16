@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="default-src 'self' file:; script-src 'self' file:; style-src 'self' file:; img-src 'self' data: file:; media-src 'self' file: blob:; font-src 'self' data: file:; object-src 'none'"
+  />
+  <title>Nova Player</title>
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- ============================== Title bar ============================ -->
+    <header id="topbar">
+      <div id="brand">
+        <svg class="brand-logo" viewBox="0 0 32 32" aria-hidden="true">
+          <defs>
+            <linearGradient id="brand-lg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#4f8cff" />
+              <stop offset="1" stop-color="#7c5cff" />
+            </linearGradient>
+          </defs>
+          <rect x="1" y="1" width="30" height="30" rx="8" fill="url(#brand-lg)" />
+          <path d="M13 10.5v11c0 .8.9 1.3 1.6.9l8.6-5.5c.6-.4.6-1.4 0-1.8l-8.6-5.5c-.7-.4-1.6.1-1.6.9z" fill="#fff" />
+        </svg>
+        <span>Nova Player</span>
+      </div>
+
+      <div id="tb-title" class="tb-title"></div>
+
+      <div id="top-actions">
+        <button id="btn-open-files" class="btn ghost" title="Open media files (Ctrl+O)"></button>
+        <button id="btn-open-folder" class="btn ghost" title="Open a folder and load its media (Ctrl+Shift+O)"></button>
+        <button id="btn-playlist-toggle" class="icon-btn" title="Show / hide playlist"></button>
+        <div class="tb-sep"></div>
+        <div class="win-controls">
+          <button id="wc-min" class="wc" title="Minimize"></button>
+          <button id="wc-max" class="wc" title="Maximize / Restore"></button>
+          <button id="wc-close" class="wc close" title="Close"></button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============================== Main area ============================ -->
+    <div id="main">
+      <section id="stage">
+        <video id="player" playsinline preload="metadata"></video>
+
+        <div id="audio-panel" class="hidden">
+          <div class="glow glow-a"></div>
+          <div class="glow glow-b"></div>
+          <div id="cover"><span id="cover-letter">♪</span></div>
+          <div id="audio-title"></div>
+          <div id="audio-sub"></div>
+          <div id="eq" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+
+        <div id="empty-state">
+          <div class="empty-logo">
+            <svg viewBox="0 0 32 32" aria-hidden="true">
+              <defs>
+                <linearGradient id="empty-lg" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#4f8cff" />
+                  <stop offset="1" stop-color="#7c5cff" />
+                </linearGradient>
+              </defs>
+              <rect x="1" y="1" width="30" height="30" rx="8" fill="none" stroke="url(#empty-lg)" stroke-width="1.6" opacity="0.85" />
+              <path d="M13 10.5v11c0 .8.9 1.3 1.6.9l8.6-5.5c.6-.4.6-1.4 0-1.8l-8.6-5.5c-.7-.4-1.6.1-1.6.9z" fill="url(#empty-lg)" opacity="0.9" />
+            </svg>
+          </div>
+          <h1>Nothing playing yet</h1>
+          <p>Open a file or folder, or drop media anywhere in this window.</p>
+          <div class="hints">
+            <span><kbd>Space</kbd> Play / Pause</span>
+            <span><kbd>&larr;</kbd> <kbd>&rarr;</kbd> Seek ±5s</span>
+            <span><kbd>F</kbd> Fullscreen</span>
+            <span><kbd>M</kbd> Mute</span>
+          </div>
+        </div>
+
+        <div id="spinner" class="hidden"></div>
+        <div id="drop-overlay" class="hidden"><div class="drop-inner">Drop to add to playlist</div></div>
+        <div id="toast" class="hidden"></div>
+      </section>
+
+      <aside id="playlist-panel">
+        <div class="pl-head">
+          <span class="pl-title">Playlist</span>
+          <span id="pl-count" class="pl-count"></span>
+          <div class="pl-actions">
+            <button id="btn-pl-add" class="icon-btn" title="Add files"></button>
+            <button id="btn-pl-import" class="icon-btn" title="Import playlist (Ctrl+I)"></button>
+            <button id="btn-pl-save" class="icon-btn" title="Export playlist (Ctrl+E)"></button>
+            <button id="btn-pl-clear" class="icon-btn" title="Clear playlist"></button>
+          </div>
+        </div>
+        <div class="pl-filter">
+          <input id="pl-filter" type="search" placeholder="Filter playlist…" autocomplete="off" spellcheck="false" />
+        </div>
+        <ul id="playlist" class="pl-list"></ul>
+      </aside>
+    </div>
+
+    <!-- ============================== Controls ============================= -->
+    <footer id="controls">
+      <div id="seek-row">
+        <span id="time-cur" class="time">0:00</span>
+        <div class="seek-wrap">
+          <div class="seek-track"></div>
+          <div class="seek-buffered" id="seek-buffered"></div>
+          <input id="seek" type="range" min="0" max="1000" step="1" value="0" aria-label="Seek" />
+        </div>
+        <span id="time-dur" class="time">0:00</span>
+      </div>
+      <div id="btn-row">
+        <div class="cluster">
+          <button id="btn-shuffle" class="icon-btn" title="Shuffle (S)"></button>
+          <button id="btn-prev" class="icon-btn" title="Previous (J)"></button>
+          <button id="btn-play" class="icon-btn" title="Play / Pause (Space)"></button>
+          <button id="btn-next" class="icon-btn" title="Next (L)"></button>
+          <button id="btn-repeat" class="icon-btn" title="Repeat: off → all → one (R)"></button>
+        </div>
+        <div class="cluster">
+          <button id="btn-pip" class="icon-btn" title="Picture in picture"></button>
+          <div id="vol-group">
+            <button id="btn-mute" class="icon-btn" title="Mute (M)"></button>
+            <input id="vol" type="range" min="0" max="100" step="1" value="100" aria-label="Volume" />
+          </div>
+          <div class="speed-wrap" id="speed-wrap">
+            <button id="btn-rate" class="text-btn" title="Playback speed ( , and . )">1&times;</button>
+            <div class="pop hidden" id="speed-pop" role="menu"></div>
+          </div>
+          <button id="btn-fullscreen" class="icon-btn" title="Full screen (F / F11)"></button>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/playlist.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

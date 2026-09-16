@@ -1,0 +1,52 @@
+{
+  "name": "nova-player",
+  "productName": "Nova Player",
+  "version": "1.1.0",
+  "description": "A lightweight Windows media player for video and audio files, built with Electron.",
+  "main": "src/main/main.js",
+  "author": "d3adly404",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "test": "node test/logic.test.js",
+    "build:win": "electron-builder --win",
+    "build:win:portable": "electron-builder --win portable",
+    "build:dir": "electron-builder --win --dir"
+  },
+  "devDependencies": {
+    "electron": "^44.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "com.d3adly404.nova-player",
+    "productName": "Nova Player",
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ],
+      "icon": "build/icon.png",
+      "artifactName": "${productName}-${version}-win-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "Nova Player"
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-win-${arch}-portable.exe"
+    }
+  }
+}
