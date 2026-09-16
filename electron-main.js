@@ -61,7 +61,7 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       sandbox: false,
-      // Allow iframes to load external sites
+      webviewTag: true,
       webSecurity: true,
       allowRunningInsecureContent: false,
     },

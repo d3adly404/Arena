@@ -235,9 +235,12 @@
       </div>
     </div>
 
-    <!-- Browser Frame Container (for iframes) -->
+    <!-- Browser Frame Container -->
     <div class="browser-frame-container" id="browser-frame-container" style="display:none">
       <div class="loading-bar" id="loading-bar"></div>
+      <!-- webview for Electron (bypasses X-Frame-Options) -->
+      <webview id="browser-webview" style="display:none" allowpopups></webview>
+      <!-- iframe fallback for web browser -->
       <iframe id="browser-frame" referrerpolicy="no-referrer" allow="fullscreen; autoplay; encrypted-media"></iframe>
     </div>
 
