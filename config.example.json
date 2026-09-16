@@ -1,0 +1,44 @@
+{
+  "_comment": "AIAgent configuration. Copy to config.json and edit. Anything left empty falls back to a sensible default. An API key in the environment variable GEMINI_API_KEY always wins over the one below.",
+
+  "provider": "auto",
+  "assistant_name": "Nova",
+  "language": "en",
+
+  "gemini_api_key": "",
+  "gemini_model": "gemini-2.0-flash",
+  "gemini_stt_model": "gemini-2.0-flash",
+  "gemini_send_raw_audio": false,
+
+  "ollama_url": "http://127.0.0.1:11434",
+  "ollama_model": "llava:13b",
+
+  "vision_source": "both",
+  "camera_index": 0,
+  "screen_monitor": 1,
+  "capture_fps": 2.0,
+  "max_image_dim": 1024,
+  "jpeg_quality": 70,
+
+  "mic_device_index": -1,
+  "sample_rate": 16000,
+  "vad_aggressiveness": 2,
+  "silence_threshold_s": 0.9,
+  "max_utterance_s": 30.0,
+  "barge_in": false,
+  "barge_in_level": 0.02,
+
+  "stt_engine": "auto",
+  "whisper_model": "base.en",
+
+  "tts_engine": "auto",
+  "tts_voice": "",
+  "tts_rate": 1.0,
+
+  "mode": "watch",
+  "watch_interval_s": 30.0,
+  "on_start_greeting": true,
+
+  "show_window": true,
+  "log_level": "INFO"
+}

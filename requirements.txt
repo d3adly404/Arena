@@ -1,0 +1,12 @@
+# Core (all modes). Installed automatically by Build_AIAgent_on_Windows.bat
+numpy>=1.26
+requests>=2.31
+httpx>=0.27
+mss>=9.0
+opencv-python>=4.9          # GUI build: needed for the live window on Windows
+sounddevice>=0.4.6          # microphone capture (PortAudio; binary bundled for Windows)
+webrtcvad-wheels>=2.0.14    # voice activity detection
+simpleaudio>=1.0.5          # low-latency WAV playback for TTS output
+edge-tts>=6.1               # free online neural TTS (no API key)
+pyttsx3>=2.90               # Windows SAPI5 speech (offline, native voices)
+faster-whisper>=1.0         # offline speech-to-text (downloads a model on first run)
