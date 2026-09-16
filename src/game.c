@@ -79,6 +79,7 @@ void game_load_room(int idx,float px,float py,int dir){
     G->camX=CLAMP(px-VIEW_W/2,0,G->world.rooms[idx].w*TILE-VIEW_W);
     G->camY=CLAMP(py-VIEW_H/2,0,G->world.rooms[idx].h*TILE-VIEW_H);
     G->roomTitleT=120;
+    G->transImmune=30;
     /* discover neighbors */
     Room *r=&G->world.rooms[idx];
     for(int i=0;i<r->nExits;i++) G->world.st[r->exits[i].target].discovered=1;
@@ -235,7 +236,10 @@ void check_transitions(void){
         RoomExit *e=&r->exits[i];
         int ax=e->area.x*TILE, ay=e->area.y*TILE, aw=e->area.w*TILE, ah=e->area.h*TILE;
         if(faabb(p->x,p->y,p->w,p->h,ax,ay,aw,ah)){
-            game_room_transition(e->target, e->tx*TILE, e->ty*TILE, e->dir);
+            Room *tr=&G->world.rooms[e->target];
+            int stx = e->tx<0? (tr->w+e->tx) : e->tx;
+            int sty = e->ty<0? (tr->h+e->ty) : e->ty;
+            game_room_transition(e->target, stx*TILE, sty*TILE, e->dir);
             return;
         }
     }

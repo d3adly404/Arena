@@ -450,6 +450,7 @@ typedef struct {
     int      transT, transDir, transTarget;
     float    transX, transY;
     int      transDirVec;
+    int      transImmune;
     /* ui */
     int      menuSel, menuPage;
     int      mapZoom, mapSel;

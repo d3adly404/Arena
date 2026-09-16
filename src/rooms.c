@@ -53,8 +53,15 @@ static void sp(int type,int tx,int ty,int p0,int p1,int p2){
 static void exitr(int target,int x,int y,int wd,int hg,int tx,int ty,int dir){
     if(BR->nExits>=8) return;
     RoomExit *e=&BR->exits[BR->nExits++];
-    e->target=target; e->area.x=x; e->area.y=y; e->area.w=wd; e->area.h=hg;
-    e->tx=tx; e->ty=ty; e->dir=dir;
+    e->target=target; e->dir=dir;
+    if(hg<=3){ /* vertical door (top/bottom) */
+        if(y<=0){ e->area.x=x; e->area.y=0; e->area.w=wd; e->area.h=2; }
+        else    { e->area.x=x; e->area.y=BR->h-3; e->area.w=wd; e->area.h=3; }
+        e->tx=tx; e->ty=ty;
+    } else {   /* side door at floor level, 2 wide x 4 tall; safe spawn inside */
+        if(x<=1){ e->area.x=0; e->area.y=BR->h-7; e->area.w=2; e->area.h=4; e->tx=4;  e->ty=-7; }
+        else    { e->area.x=BR->w-2; e->area.y=BR->h-7; e->area.w=2; e->area.h=4; e->tx=-5; e->ty=-7; }
+    }
 }
 static void end(int boss,int music,int dark,int rain){
     BR->boss=boss; BR->music=music; BR->dark=dark; BR->rain=rain;
@@ -75,6 +82,7 @@ static void lava(int x,int y,int w,int h){ for(int j=0;j<h;j++)for(int i=0;i<w;i
 static void iceb(int x,int y,int w,int h){ for(int j=0;j<h;j++)for(int i=0;i<w;i++) set(x+i,y+j,T_ICEBLOCK); }
 static void vineb(int x,int y,int w,int h){ for(int j=0;j<h;j++)for(int i=0;i<w;i++) set(x+i,y+j,T_VINE); }
 static void crum(int x,int y,int w){ for(int i=0;i<w;i++) set(x+i,y,T_CRUMBLE); }
+static void clr(int x,int y,int w,int h){ for(int j=0;j<h;j++)for(int i=0;i<w;i++) set(x+i,y+j,T_EMPTY); }
 
 
 void world_build_rooms(void){
@@ -82,13 +90,13 @@ void world_build_rooms(void){
 
 /* ================= VERDANT HOLLOW ================= */
 begin(0,"Verdant Outskirts",Z_VERDANT,0,1); size(44,22); box();
-  plat(18,12,5); plat(6,14,2); plat(38,14,2);
+  plat(8,16,3); plat(14,13,3); plat(20,10,3); plat(30,14,3); plat(36,11,3);
   sp(E_NPC,5,16,0,0,0); sp(E_SIGN,9,16,0,0,0); sp(E_SHRINE,21,15,0,0,0);
   sp(E_SLIME,28,16,0,0,0); sp(E_PICKUP,34,13,0,0,0); sp(E_SLIME,20,17,0,0,0);
   exitr(1,42,12,2,7,1,17,1); exitr(3,8,0,6,2,14,19,0);
   end(-1,MUS_VERDANT,0,5);
 begin(1,"Mossy Crossing",Z_VERDANT,1,1); size(44,22); box();
-  plat(15,11,3); plat(29,11,3); plat(4,14,3); plat(20,15,2);
+  clr(17,19,8,3); spike(17,21,8); plat(18,15,2); plat(22,13,2); plat(26,15,2); plat(10,14,3); plat(32,12,3);
   sp(E_THORNLING,12,16,0,0,0); sp(E_SHROOM,31,16,0,0,0); sp(E_BAT,39,14,0,0,0);
   spike(10,18,3); spike(28,18,3);
   sp(E_PICKUP,2,16,0,0,0); sp(E_PICKUP,41,16,0,0,0); sp(E_LORE,30,14,0,0,0);

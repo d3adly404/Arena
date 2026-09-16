@@ -319,16 +319,17 @@ void player_update(void){
     else if(!onground) st=(p->vy<0?2:3);
     else if(fabsf(p->vx)>10) st=1;
     p->animState=st;
-    p->animFrame=(int)(p->animT*10)%6;
+    p->animFrame=(int)(p->animT*12)%8;
     (void)p_maxhp_bonus;
 }
 
 /* ---------------- render ---------------- */
+static const char *RUNF[8]={"cat_run0","cat_run1","cat_run2","cat_run3","cat_run4","cat_run5","cat_run6","cat_run7"};
 static Sprite *cat_frame_sprite(void){
     Player *p=&G->p;
     const char *n="cat_idle0";
     switch(p->animState){
-        case 1: n=p->animFrame<6? (const char*[]){"cat_run0","cat_run1","cat_run2","cat_run3","cat_run4","cat_run5"}[p->animFrame%6] : "cat_run0"; break;
+        case 1: n=RUNF[p->animFrame%8]; break;
         case 2: n="cat_jump"; break;
         case 3: n=p->gliding?"cat_glide":"cat_fall"; break;
         case 4: n="cat_dash"; break;
@@ -348,14 +349,14 @@ void player_render(void){
     Player *p=&G->p;
     if(p->deadT && p->deadT<10){} /* still draw */
     int ox=(int)G->camX, oy=(int)G->camY;
-    int x=(int)(p->x+p->w/2)-9-ox;
-    int y=(int)(p->y+p->h)-22-oy;
+    int x=(int)(p->x+p->w/2)-12-ox;
+    int y=(int)(p->y+p->h)-30-oy;
     /* blink while invulnerable */
     if(p->invulnT>0 && (G->frame/3)%2==0 && !p->deadT) return;
 
     /* tail behind */
-    Sprite *tail=art("cat_tail");
-    if(tail) gfx_sprite_ex(g_screen,VIEW_W,VIEW_H,tail, x+(p->dir>0?-6:14), y+10, p->dir<0,0, RGB(0xff,0xff,0xff),TINT_MUL,1.0f);
+    Sprite *tail=art((G->frame/8)%2? "cat_tail1":"cat_tail");
+    if(tail) gfx_sprite_ex(g_screen,VIEW_W,VIEW_H,tail, x+(p->dir>0?-9:17), y+16, p->dir<0,0, RGB(0xff,0xff,0xff),TINT_MUL,1.0f);
 
     Sprite *s=cat_frame_sprite();
     if(s) gfx_sprite_ex(g_screen,VIEW_W,VIEW_H,s,x,y,p->dir<0,0,RGB(0xff,0xff,0xff),TINT_MUL,1.0f);
@@ -364,12 +365,12 @@ void player_render(void){
     if(p->attackT>0 || p->specialT>0){
         Sprite *sw=art("sword");
         float ang=0;
-        int cx=x+9, cy=y+12;
+        int cx=x+12, cy=y+16;
         if(p->attackKind==3) ang=-1.9f + (14-p->attackT)*0.2f;
         else if(p->attackKind==4) ang=1.6f;
         else ang=(p->dir>0? -0.6f : 0.6f) + (12-p->attackT)*0.25f*(p->dir>0?1:-1);
         /* draw simple rotated blade via lines */
-        int len=22;
+        int len=26;
         int ex=cx+(int)(cosf(ang)*len*p->dir), ey=cy+(int)(sinf(ang)*len);
         gfx_line_thick(g_screen,VIEW_W,VIEW_H,cx,cy,ex,ey,2,RGB(0xe6,0xf6,0xff));
         gfx_line_thick(g_screen,VIEW_W,VIEW_H,cx,cy,ex,ey,1,(0xFF000000u|0xffffff));
@@ -378,6 +379,6 @@ void player_render(void){
         if(sl) gfx_sprite_ex(g_screen,VIEW_W,VIEW_H,sl,cx-12,cy-12,p->dir<0,0,(0xFF000000u|0xffffff),TINT_ADD,0.7f);
     } else {
         Sprite *sw=art("sword");
-        if(sw) gfx_sprite_ex(g_screen,VIEW_W,VIEW_H,sw,x+(p->dir>0?12:-2),y+8,p->dir<0,0,RGB(0xff,0xff,0xff),TINT_MUL,1.0f);
+        if(sw) gfx_sprite_ex(g_screen,VIEW_W,VIEW_H,sw,x+(p->dir>0?15:-4),y+12,p->dir<0,0,RGB(0xff,0xff,0xff),TINT_MUL,1.0f);
     }
 }

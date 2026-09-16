@@ -198,7 +198,9 @@ void art_init(void){
     SLOTS=(ArtSlot*)md_calloc(NSLOTS*sizeof(ArtSlot));
     for(int i=0;i<ART_COUNT;i++){
         snprintf(SLOTS[i].name,sizeof(SLOTS[i].name),"%s",ART_TABLE[i].name);
-        SLOTS[i].spr=spr_from_ascii(ART_TABLE[i].w,ART_TABLE[i].h,ART_TABLE[i].art,ART_PAL,36);
+        Sprite *s=spr_new(ART_TABLE[i].w,ART_TABLE[i].h);
+        memcpy(s->px,ART_TABLE[i].px,(size_t)ART_TABLE[i].w*ART_TABLE[i].h*sizeof(uint32_t));
+        SLOTS[i].spr=s;
     }
 }
 
