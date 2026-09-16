@@ -578,6 +578,7 @@ html, body {
 .browser-frame-container {
   flex: 1;
   position: relative;
+  overflow: hidden;
 }
 
 .browser-frame-container iframe {

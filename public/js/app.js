@@ -27,6 +27,7 @@ const state = {
   history: JSON.parse(localStorage.getItem('novase_history') || '[]'),
   theme: localStorage.getItem('novase_theme') || 'dark',
   activeDownloads: new Map(),
+  navigating: false, // Guard against double-navigation
 };
 
 const SEARCH_ENGINES = {
@@ -52,6 +53,37 @@ document.addEventListener('DOMContentLoaded', () => {
   initSettings();
   initKeyboardShortcuts();
   createNewTab();
+
+  // Iframe load error handler — many sites block iframes via X-Frame-Options
+  const iframe = document.getElementById('browser-frame');
+  iframe.addEventListener('load', () => {
+    // Try to detect if the iframe loaded successfully
+    try {
+      // If we can access the URL, it loaded
+      const iframeUrl = iframe.contentWindow.location.href;
+      // Update tab title if possible
+      const tab = state.tabs.find(t => t.id === state.activeTabId);
+      if (tab && tab.url) {
+        try {
+          const docTitle = iframe.contentDocument?.title;
+          if (docTitle && docTitle !== '') {
+            tab.title = docTitle.substring(0, 30);
+            renderTabs();
+            document.title = tab.title + ' — Novase';
+          }
+        } catch (e) {}
+      }
+    } catch (e) {
+      // Cross-origin — that's normal, page loaded fine
+    }
+  });
+
+  iframe.addEventListener('error', () => {
+    const tab = state.tabs.find(t => t.id === state.activeTabId);
+    if (tab && tab.url) {
+      showIframeError(tab.url);
+    }
+  });
 });
 
 // ── Theme ───────────────────────────────────────────────────────
@@ -134,10 +166,13 @@ function activateTab(id) {
   if (!tab || !tab.url) {
     ntp.style.display = '';
     frame.style.display = 'none';
+    iframe.src = 'about:blank';
   } else {
     ntp.style.display = 'none';
     frame.style.display = '';
-    if (iframe.src !== tab.url) {
+    // Only set src if it's different — avoid unnecessary reloads
+    const currentSrc = iframe.getAttribute('src') || '';
+    if (currentSrc !== tab.url) {
       iframe.src = tab.url;
     }
   }
@@ -226,38 +261,52 @@ function initNavigation() {
 }
 
 function navigateTo(input) {
-  let url = input;
+  if (!input || state.navigating) return;
+  state.navigating = true;
 
-  // Check if it's a URL
-  if (isURL(input)) {
-    if (!input.startsWith('http://') && !input.startsWith('https://')) {
-      url = 'https://' + input;
+  try {
+    let url = input.trim();
+
+    // Check if it's a URL or a search query
+    if (isURL(url)) {
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+      }
+    } else {
+      // It's a search query — use the selected engine
+      const engine = SEARCH_ENGINES[state.currentEngine];
+      url = engine.search(url);
     }
-  } else {
-    // It's a search query
-    const engine = SEARCH_ENGINES[state.currentEngine];
-    url = engine.search(input);
-  }
 
-  const tab = state.tabs.find(t => t.id === state.activeTabId);
-  if (tab) {
-    tab.url = url;
-    tab.title = extractDomain(url);
+    const tab = state.tabs.find(t => t.id === state.activeTabId);
+    if (tab) {
+      tab.url = url;
+      tab.title = extractDomain(url);
+    }
+
+    // Update UI
+    document.getElementById('url-input').value = url;
+    document.getElementById('new-tab-page').style.display = 'none';
+    document.getElementById('browser-frame-container').style.display = '';
+    hideAllPanels();
+
+    // Navigate the iframe
+    const iframe = document.getElementById('browser-frame');
+    iframe.src = url;
+
+    // Update tabs display
     renderTabs();
+
+    // Add to history
+    addToHistory(url, tab ? tab.title : '');
+
+    document.title = (tab ? tab.title : 'Loading') + ' — Novase';
+  } catch (err) {
+    console.error('Navigation error:', err);
+    showToast('Navigation failed', 'error');
+  } finally {
+    setTimeout(() => { state.navigating = false; }, 200);
   }
-
-  document.getElementById('url-input').value = url;
-  document.getElementById('new-tab-page').style.display = 'none';
-  document.getElementById('browser-frame-container').style.display = '';
-  hideAllPanels();
-
-  const iframe = document.getElementById('browser-frame');
-  iframe.src = url;
-
-  // Add to history
-  addToHistory(url, tab ? tab.title : '');
-
-  document.title = (tab ? tab.title : 'Loading') + ' — Novase';
 }
 
 function goHome() {
@@ -276,14 +325,59 @@ function goHome() {
   document.title = 'Novase Browser';
 }
 
+function showIframeError(url) {
+  const container = document.getElementById('browser-frame-container');
+  const existing = container.querySelector('.iframe-error-overlay');
+  if (existing) return;
+
+  const safeUrl = url.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+  const overlay = document.createElement('div');
+  overlay.className = 'iframe-error-overlay';
+  overlay.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg-primary);z-index:10;';
+  overlay.innerHTML =
+    '<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="margin-bottom:16px;opacity:0.5">' +
+      '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>' +
+    '</svg>' +
+    '<h3 style="color:var(--text-primary);margin-bottom:8px;">Site cannot be displayed</h3>' +
+    '<p style="color:var(--text-muted);font-size:13px;max-width:400px;text-align:center;margin-bottom:20px;">' +
+      'This website blocks being loaded inside another page. This is common for many sites.' +
+    '</p>' +
+    '<div style="display:flex;gap:10px;">' +
+      '<button id="iframe-open-external" style="padding:8px 20px;background:var(--accent-primary);color:white;border:none;border-radius:8px;cursor:pointer;font-family:var(--font);font-size:13px;">' +
+        'Open in System Browser' +
+      '</button>' +
+      '<button id="iframe-retry" style="padding:8px 20px;background:var(--bg-tertiary);color:var(--text-secondary);border:1px solid var(--border-color);border-radius:8px;cursor:pointer;font-family:var(--font);font-size:13px;">' +
+        'Try Again' +
+      '</button>' +
+    '</div>';
+  container.appendChild(overlay);
+
+  overlay.querySelector('#iframe-open-external').addEventListener('click', () => {
+    if (window.novaseDesktop && window.novaseDesktop.isElectron) {
+      // Use Electron's shell to open externally
+      const { shell } = require('electron');
+    }
+    window.open(url, '_blank');
+    overlay.remove();
+  });
+  overlay.querySelector('#iframe-retry').addEventListener('click', () => {
+    overlay.remove();
+    document.getElementById('browser-frame').src = url;
+  });
+}
+
 function isURL(str) {
-  try {
-    const urlPattern = /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w\-./?%&=]*)?$/;
-    const domainPattern = /^[\w-]+\.[\w-]+/;
-    return urlPattern.test(str) || (domainPattern.test(str) && str.includes('.'));
-  } catch(e) {
-    return false;
-  }
+  // Must not contain spaces (search queries have spaces, URLs don't)
+  if (/\s/.test(str)) return false;
+  // Explicit protocol
+  if (/^https?:\/\//i.test(str)) return true;
+  // IP addresses
+  if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(:\d+)?(\/|$)/.test(str)) return true;
+  // localhost
+  if (/^localhost(:\d+)?(\/|$)/i.test(str)) return true;
+  // Domain-like: has a dot and a valid TLD (2+ chars), no spaces
+  if (/^[\w-]+\.[\w-]{2,}(\/.*)?$/.test(str)) return true;
+  return false;
 }
 
 function extractDomain(url) {

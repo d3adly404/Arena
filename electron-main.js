@@ -25,9 +25,7 @@ if (!gotLock) {
   });
 }
 
-// ── Start Express server IN-PROCESS (not as child process) ──
-// This is critical: require() resolves deps from the asar archive,
-// while spawn() cannot find node_modules inside asar.
+// ── Start Express server IN-PROCESS ─────────────────────────
 async function startServer() {
   try {
     const { startServer } = require('./server.js');
@@ -42,7 +40,6 @@ async function startServer() {
   }
 }
 
-// ── Icon ────────────────────────────────────────────────────
 function getIconPath() {
   const name = process.platform === 'win32' ? 'icon.ico' : 'icon.png';
   return path.join(__dirname, 'build-resources', name);
@@ -64,6 +61,9 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       sandbox: false,
+      // Allow iframes to load external sites
+      webSecurity: true,
+      allowRunningInsecureContent: false,
     },
     show: false,
   });
@@ -75,12 +75,29 @@ function createWindow() {
     if (isDev) mainWindow.webContents.openDevTools({ mode: 'detach' });
   });
 
-  mainWindow.webContents.on('did-fail-load', (e, code, desc) => {
-    console.error('Load failed:', code, desc, '— retrying...');
-    setTimeout(() => mainWindow.loadURL(`http://localhost:${SERVER_PORT}`), 1000);
+  // CRITICAL FIX: Only reload the app for MAIN FRAME failures.
+  // Without this check, iframe failures reload the whole app → blank reset.
+  mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDesc, validatedURL, isMainFrame) => {
+    if (!isMainFrame) return; // Ignore iframe failures — let them handle themselves
+    console.error('Main frame load failed:', errorCode, errorDesc);
+    setTimeout(() => {
+      if (mainWindow) mainWindow.loadURL(`http://localhost:${SERVER_PORT}`);
+    }, 1000);
   });
 
+  // Prevent the main window from being navigated away by link clicks inside iframes
+  mainWindow.webContents.on('will-navigate', (event, url) => {
+    // Allow the initial load to localhost
+    if (url.startsWith(`http://localhost:${SERVER_PORT}`)) return;
+    // Block everything else — navigation should happen in iframes
+    event.preventDefault();
+  });
+
+  // Open external links in system browser
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith(`http://localhost:${SERVER_PORT}`)) {
+      return { action: 'allow' };
+    }
     shell.openExternal(url);
     return { action: 'deny' };
   });
