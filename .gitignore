@@ -1,0 +1,11 @@
+# build outputs
+/harness
+/dist/*.pdb
+/dist/*.ilk
+/dist/*.obj
+
+# test / dev artifacts
+/shots/
+/saves/
+__pycache__/
+*.pyc
